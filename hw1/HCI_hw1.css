@@ -1,0 +1,12 @@
+﻿body {
+    width: 800px;
+    text-align: justify;
+    margin: auto;
+    line-height: 35px;
+}
+
+.border{
+    border-width:5px;
+    border-style : solid;
+    border-color : white;
+}
