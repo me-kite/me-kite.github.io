@@ -1,0 +1,412 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../hw1/HCI_hw1.css">
+    <title>김나연_HCI</title>
+</head>
+<body>
+
+    <h3>HomeWork 3-2 </h3>
+    <div id="start">
+        <h2>Name</h2>
+
+        <table>
+            <tr>
+                <td> First name </td>
+                <td>
+                    <input type="text" id="firstname" />
+                </td>
+            </tr>
+            <tr>
+                <td> Middle name </td>
+                <td>
+                    <input type="text" id="middlename" placeholder="optional" />
+                </td>
+            </tr>
+            <tr>
+                <td> Last name </td>
+                <td>
+                    <input type="text" id="lastname" />
+                </td>
+            </tr>
+        </table>
+
+        <h2>Image</h2>
+        <input type="file" onchange="loadimage(this)" src="#" alt="your image" />
+
+        <script type="text/javascript">
+        function loadimage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#newphoto').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        </script>
+
+        <h2>Contact Information</h2>
+        <table>
+            <tr>
+                <td> E-mail </td>
+                <td>
+                    <input type="email" id="email" />
+                </td>
+            </tr>
+            <tr>
+                <td> Phone number </td>
+                <td>
+                    <input type="text" id="phonenumber" placeholder="000-0000-0000" pattern="[0-9]{3}-[0-9]{4}-[0,9]{4}" />
+                </td>
+            </tr>
+        </table>
+
+
+        <!--
+        <script>
+            var patt = new RegExp("[0-9]{3}-[0-9]{4}-[0,9]{4}");
+            var res = patt.test($("#phonenumber").val());
+
+            if (!patt.test($("#phonenumber").val())) {
+                alert("전화번호 입력 형식이 잘못되었습니다.");
+            }
+        </script>
+            -->
+
+
+
+        <h2>Career goal/objective(in one sentence)</h2>
+        <input type="text" id="careergoal" />
+
+        <h2>Education</h2>
+        <table id="education">
+            <tr>
+                <th>School</th>
+                <th>Major</th>
+                <th>Duration</th>
+            </tr>
+            <tbody id="edutbody">
+                <tr>
+                    <td><input type="text" id="school1" /></td>
+                    <td><input type="text" id="major1" /></td>
+                    <td><input type="text" id="duration1" placeholder="0000.00.00 ~ 0000.00.00" /></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <input type="button" id="eduadd" onclick="eduadd();" value="추가" />
+        <input type="button" id="edudelete" onclick="edudelete();" value="삭제" />
+        <script type="text/javascript">
+        function eduadd(){
+            var table = document.getElementById("edutbody");
+            var row = table.insertRow(table.rows.length);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+
+            cell1.innerHTML = "<td><input type=\"text\" id=\"school"+table.rows.length+ "\" /></td>";
+            cell2.innerHTML = "<td><input type=\"text\" id=\"major" + table.rows.length + "\"/></td>";
+            cell3.innerHTML = "<td><input type=\"text\" id=\"duration" + table.rows.length + "\"placeholder=\"0000.00.00 ~ 0000.00.00\"/></td>";
+        }
+
+        function edudelete() {
+            var table = document.getElementById("edutbody");
+            if (table.rows.length < 2) return;
+            table.deleteRow(table.rows.length - 1);
+        }
+        </script>
+
+        <h2>Experience</h2>
+        <table id="experience">
+            <tr>
+                <th>Organization</th>
+                <th>Duties</th>
+                <th>Duration</th>
+            </tr>
+            <tbody id="exptbody">
+                <tr>
+                    <td><input type="text" id="Organization1" /></td>
+                    <td><input type="text" id="Duties1" /></td>
+                    <td><input type="text" id="Exp_duration1" placeholder="0000.00.00 ~ 0000.00.00" /></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <input type="button" id="eduadd" onclick="expadd();" value="추가" />
+        <input type="button" id="edudelete" onclick="expdelete();" value="삭제" />
+        <script type="text/javascript">
+        function expadd(){
+            var table = document.getElementById("exptbody");
+            var row = table.insertRow(table.rows.length);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+
+            cell1.innerHTML = "<td><input type=\"text\" id=\"Organization" + table.rows.length  + "\" /></td>";
+            cell2.innerHTML = "<td><input type=\"text\" id=\"Duties" + table.rows.length  + "\"/></td>";
+            cell3.innerHTML = "<td><input type=\"text\" id=\"Exp_duration" + table.rows.length + "\"placeholder=\"0000.00.00 ~ 0000.00.00\"/></td>";
+        }
+
+        function expdelete() {
+            var table = document.getElementById("exptbody");
+            if (table.rows.length < 2) return;
+            table.deleteRow(table.rows.length - 1);
+        }
+        </script>
+
+        <h2>Skills</h2>
+        <table id="skill">
+            <tr>
+                <th>Skill</th>
+                <th>Detail</th>
+            </tr>
+            <tbody id="skillbody">
+                <tr>
+                    <td><input type="text" id="Skill1" /></td>
+                    <td><input type="text" id="Skilldetail1" /></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <input type="button" id="skilladd" onclick="skilladd();" value="추가" />
+        <input type="button" id="skilldelete" onclick="skilldelete();" value="삭제" />
+        <script type="text/javascript">
+        function skilladd(){
+            var table = document.getElementById("skillbody");
+            var row = table.insertRow(table.rows.length);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+
+            cell1.innerHTML = "<td><input type=\"text\" id=\"Skill" + table.rows.length + "\" /></td>";
+            cell2.innerHTML = "<td><input type=\"text\" id=\"Skilldetail" + table.rows.length + "\" /></td>";
+        }
+
+        function skilldelete() {
+            var table = document.getElementById("skillbody");
+            if (table.rows.length < 2) return;
+            table.deleteRow(table.rows.length - 1);
+        }
+        </script>
+
+        <h2>Others</h2>
+        <table id="others">
+            <tbody id="othersbody">
+                <tr>
+                    <td><input type="text" id="Others1" /></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <input type="button" id="othersadd" onclick="othersadd();" value="추가" />
+        <input type="button" id="othersdelete" onclick="othersdelete();" value="삭제" />
+        <script type="text/javascript">
+        function othersadd(){
+            var table = document.getElementById("othersbody");
+            var row = table.insertRow(table.rows.length);
+            var cell1 = row.insertCell(0);
+
+            cell1.innerHTML = "<td><input type=\"text\" id=\"Others" + table.rows.length + "\" /></td>";
+        }
+
+        function othersdelete() {
+            var table = document.getElementById("othersbody");
+            if (table.rows.length < 2) return;
+            table.deleteRow(table.rows.length - 1);
+        }
+        </script>
+        <br />
+
+
+        <h2>Format/Style options</h2>
+        <table>
+            <tr>
+                <td>Background Color</td>
+                <td><input type="color" id="backcolor" value="#ffffff" /></td>
+            </tr>
+            <tr>
+                <td>Font Size</td>
+                <td><input type="range" id="fontsize" min="1" max="3" value="1" step="0.1" /></td>
+            </tr>
+            <tr>
+                <td>Font Style</td>
+                <td>
+                    <select id="fontstyle">
+                        <option value="normal" selected>Normal</option>
+                        <option value="italic" selected>Italic</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+
+        <br />
+
+        <input type="button" value="Submit" id="submit" onclick="result();" />
+        <input type="button" value="Reset" id="reset" onclick="reset" />
+
+    </div>
+    <div id="changed" style="visibility : hidden; height : 0px;">
+        <script type="text/javascript">
+        function change(id) {
+            var doc = document.getElementById(id);
+            if (doc.style.visibility != "hidden") {
+                doc.style.visibility = "hidden";
+                doc.style.height = "0px";
+            }
+            else if (doc.style.visibility == "hidden") {
+                doc.style.visibility = "visible";
+                doc.style.height = "auto";
+            }
+        }
+
+        function result() {
+            var newfirstname = document.getElementById("firstname").value;
+            var newmiddlename = document.getElementById("middlename").value;
+            var newlastname = document.getElementById("lastname").value;
+            var newemail = document.getElementById("email").value;
+            var newphonenumber = document.getElementById("phonenumber").value;
+            var newcareergoal = document.getElementById("careergoal").value;
+
+            var table = document.getElementById("edutbody");
+            var newedu = "";
+            for (i = 1; i < table.rows.length +1; i++) {
+                var schoolname = "school" + i;
+                newedu += document.getElementById(schoolname).value + " ";
+                var majorname = "major" + i;
+                newedu += document.getElementById(majorname).value + " ";
+                var eduduration = "duration" + i;
+                newedu += document.getElementById(eduduration).value + "<br />";
+            }
+
+            table = document.getElementById("exptbody");
+            var newexp = "";
+            for (i = 1; i < table.rows.length +1; i++) {
+                var org = "Organization" + i;
+                newexp += document.getElementById(org).value + " ";
+                var newduties = "Duties" + i;
+                newexp += document.getElementById(newduties).value + " ";
+                var newexpduration = "Exp_duration" + i;
+                newexp += document.getElementById(newexpduration).value + "<br />";
+            }
+
+            var newskill = "";
+            table = document.getElementById("skillbody");
+            for (i = 1; i < table.rows.length +1; i++) {
+                var newsk = "Skill" + i;
+                newskill += document.getElementById(newsk).value + " ";
+                var skilldetail = "Skilldetail" + i;
+                newskill += document.getElementById(skilldetail).value + "<br/>";
+            }
+
+            var newother = "";
+            table = document.getElementById("othersbody");
+            for (i = 1; i < table.rows.length +1; i++) {
+                var newoth = "Others" + i;
+                newother += document.getElementById(newoth).value + "<br/>";
+            }
+
+            var newbgcolor = document.getElementById("backcolor").value;
+            var newfontsize = document.getElementById("fontsize").value + "em";
+            var newfontstyle = document.getElementById("fontstyle");
+
+            document.getElementById("changedname").innerHTML = newfirstname + " " + newmiddlename + " " + newlastname;
+            document.getElementById("changedphone").innerHTML = newphonenumber;
+            document.getElementById("changedemail").innerHTML = newemail;
+            document.getElementById("changedcareer").innerHTML = newcareergoal;
+            document.getElementById("changededu").innerHTML = newedu;
+            document.getElementById("changedskill").innerHTML = newskill;
+            document.getElementById("changedother").innerHTML = newother;
+            document.getElementById("changedexp").innerHTML = newexp;
+
+            document.getElementById("changed").style.backgroundColor = newbgcolor;
+            document.getElementById("changed").style.fontSize = newfontsize;
+            document.getElementById("changed").style.fontStyle = newfontstyle;
+
+
+
+            change("start");
+            change("changed");
+            change("back");
+
+        }
+        </script>
+        <img id="newphoto" src="" alt="photo" style="height : 150px;" />
+
+        <span><strong>Name</strong></span><br />
+        <span id="changedname"> a </span><br /><br />
+
+
+
+        <span><strong>Contact Info</strong></span><br />
+        <span>Phone Number : </span><span id="changedphone"> a </span><br />
+        <span>E-mail : </span><span id="changedemail"> a </span><br /><br />
+
+        <span><strong>Career goal/objective</strong></span><br />
+        <span id="changedcareer"> a </span><br /><br />
+
+        <span><strong>Education</strong></span><br />
+        <span>School / Major / Duration</span><br />
+        <span id="changededu"> a </span><br /><br />
+
+        <span><strong>Experience</strong></span><br />
+        <span>Organization / Duties / Duration</span><br />
+        <span id="changedexp"> a </span><br /><br />
+
+        <span><strong>Skills</strong></span><br />
+        <span>Skill/ Detail</span><br />
+        <span id="changedskill"> a </span><br /><br />
+
+        <span><strong>Others</strong></span><br />
+        <span id="changedother"> a </span><br /><br />
+    </div>
+
+    <div id="back" style="visibility:hidden; height:0px;">
+        <button onclick="back();">Back</button>
+        <button onclick="Export2Doc('result');">Export as .doc document</button>
+    </div>
+    <script>
+        function back() {
+            change("start");
+            change("changed");
+            change("back");
+        }
+
+        function prompFileName(){
+            var filename = prompt("Please enter file name", "hw");
+            return 	filename;
+        }
+        function Export2Doc(element){
+            var filename = prompFileName();
+            var preHtml = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export HTML To Doc</title></head><body>";
+            var postHtml = "</body></html>";
+            var html = preHtml+document.getElementById(element).innerHTML+postHtml;
+
+            var blob = new Blob(['\ufeff', html], {
+                type: 'application/msword'
+            });
+	    
+            var url = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(html);
+
+            filename = filename?filename+'.doc':'document.doc';
+	    
+            var downloadLink = document.createElement("a");
+
+            document.body.appendChild(downloadLink);
+	    
+            if(navigator.msSaveOrOpenBlob ){
+                navigator.msSaveOrOpenBlob(blob, filename);
+            }else{
+                downloadLink.href = url;
+	        
+                downloadLink.download = filename;
+	        
+                downloadLink.click();
+            }
+	    
+            document.body.removeChild(downloadLink);
+        }
+    </script>
+</body>
+</html>
