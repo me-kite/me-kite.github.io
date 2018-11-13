@@ -164,9 +164,21 @@
             ctx.font = (height/3).toString() + "px Arial";
             ctx.fillText(title, position_x + width / 2, position_y + height / 2);
 
+            //item
+            for (i = 0; i < item_list.length; i++) {
+                ctx.fillStyle = "white";
+                ctx.fillRect(position_x, position_y + height * (i + 1), width, height);
+                ctx.strokeStyle = "black";
+                ctx.strokeRect(position_x, position_y + height * (i + 1), width, height);
+                ctx.fillStyle = "black";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.font = (height / 4).toString() + "px Arial";
+                ctx.fillText(item_list[i], position_x + width / 2, position_y + (height / 2) + height * (i + 1));
+            }
 
             //클릭시 item들 나오기
-            var itemopen = false;
+            var itemopen = true;
             c.addEventListener('click', function (event) {
                 var mousePos = getMousePos(c, event);
                 if (mousePos.x > position_x && mousePos.x < (position_x + width) && mousePos.y < (position_y + height) && mousePos.y > position_y) {
