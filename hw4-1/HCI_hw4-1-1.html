@@ -1,0 +1,211 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>김나연_HCI</title>
+</head>
+<body>
+
+    <script >
+
+        //rectangular window
+        //title
+        //remove button
+        //hide button
+        //resizable
+        function Create_window(ID, position_x, position_y, width, height, title) {
+            var c = document.getElementById(ID);
+            var ctx = c.getContext('2d');
+
+            //rectangular window           
+            ctx.fillStyle = "white";            
+            ctx.fillRect(position_x, position_y, width, height);
+            ctx.strokeStyle = "black";
+            ctx.strokeRect(position_x, position_y, width, height);
+
+            //title
+            ctx.fillStyle = "black";
+            ctx.textAlign = "center";
+            ctx.font = "15px Arial";
+            ctx.fillText(title, position_x + width/2, position_y + 15);
+
+            //remove button
+            rB = { x: position_x + width-20, y: position_y, width: 20, height: 20 };
+            ctx.fillStyle = "red";
+            ctx.fillRect(rB.x, rB.y, rB.width, rB.height);
+            ctx.fillStyle = "black";
+            ctx.font = "19px Arial";
+            ctx.fillText("X", rB.x + 11, rB.y + 18);
+                //클릭시
+            c.addEventListener('click', function (event) {
+                var mousePos = getMousePos(c, event);
+                if (mousePos.x > rB.x && mousePos.x < (rB.x + rB.width) && mousePos.y < (rB.y + rB.height) && mousePos.y > rB.y) {
+                    ctx.clearRect(position_x-1, position_y-1, c.width+1, c.height+1);
+                }
+            }, false);
+
+
+            //hide button
+            rH = { x: position_x + width -40, y: position_y, width: 20, height: 20 };
+            ctx.fillStyle = "skyblue";
+            ctx.fillRect(rH.x, rH.y, rH.width, rH.height);
+            ctx.fillStyle = "black";
+            ctx.font = "19px Arial";
+            ctx.fillText("-", rH.x + 11, rH.y + 18);
+            var isHide = false;
+                //클릭시
+            c.addEventListener('click', function (event) {
+                var mousePos = getMousePos(c, event);
+                if (!isHide && mousePos.x > rH.x && mousePos.x < (rH.x + rH.width) && mousePos.y < (rH.y + rH.height) && mousePos.y > rH.y) {
+                    //ctx.clearRect(position_x, position_y, c.width, c.height);
+                    ctx.strokeStyle = "white";
+                    ctx.strokeRect(position_x, position_y, width, height);
+                    isHide = true;
+                }
+                else if (isHide && mousePos.x > rH.x && mousePos.x < (rH.x + rH.width) && mousePos.y < (rH.y + rH.height) && mousePos.y > rH.y) {
+                    //ctx.clearRect(position_x, position_y, c.width, c.height);
+                    ctx.strokeStyle = "black";
+                    ctx.strokeRect(position_x, position_y, width, height);
+                    isHide = false;
+                }
+            }, false);
+
+
+            //resizable
+            /*c.addEventListener('mousemove', function (event)){
+                var xy = getMousePos(event, c);
+
+                var position = (xy.x) + ', ' + (xy.y);
+
+                alert(position);
+            }*/
+
+        }
+
+        function getMousePos(canvas, event) {
+            var rect = canvas.getBoundingClientRect();
+            return {
+                x: event.clientX - rect.left,
+                y: event.clientY - rect.top
+            };
+        }
+
+        //textbox
+        //label, other simple properties
+        //resizable
+        function Create_textbox(ID, position_x, position_y, width, height, text, size, font) {
+            var c = document.getElementById(ID);
+            var ctx = c.getContext('2d');
+
+            //textbox           
+            ctx.fillStyle = "white";
+            ctx.fillRect(position_x, position_y, width, height);
+            ctx.strokeStyle = "black";
+            ctx.strokeRect(position_x, position_y, width, height);
+            ctx.fillStyle = "black";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.font = size.toString() + "px " + font;
+            ctx.fillText(text, position_x + width / 2, position_y + height/2);
+        }
+
+        //button
+        //resizable
+        //label, other simple properties
+        function Create_button(ID, position_x, position_y, width, height, text, size, font){
+            var c = document.getElementById(ID);
+            var ctx = c.getContext('2d');
+
+            //round button
+            var cornerRadius = 20;            
+            ctx.fillStyle = "white";
+            ctx.fillRect(position_x, position_y, width, height);
+            ctx.strokeStyle = "black";
+            ctx.moveTo(position_x + cornerRadius, position_y);
+            ctx.arcTo(position_x + width, position_y, position_x + width, position_y + height, cornerRadius);
+            ctx.arcTo(position_x + width, position_y + height, position_x, position_y + height, cornerRadius);
+            ctx.arcTo(position_x, position_y + height, position_x, position_y, cornerRadius);
+            ctx.arcTo(position_x, position_y, position_x + width, position_y, cornerRadius);
+            ctx.stroke();
+
+            //label
+            ctx.fillStyle = "black";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.font = size.toString() + "px " + font;
+            ctx.fillText(text, position_x + width / 2, position_y + height / 2);
+
+            //click
+            c.addEventListener('click', function (event) {
+                var mousePos = getMousePos(c, event);
+                if (mousePos.x > position_x && mousePos.x < (position_x + width) && mousePos.y < (position_y + height) && mousePos.y > position_y) {
+                    alert("click! : "+ text.toString());
+                }
+            }, false);
+        }
+
+
+        //Pull down menu
+        //menu title
+        //menu item list
+        //size
+        function Create_menu(ID, position_x, position_y, width, height, title, item_list) {
+            var c = document.getElementById(ID);
+            var ctx = c.getContext('2d');
+
+            //menu title
+            ctx.fillStyle = "white";
+            ctx.fillRect(position_x, position_y, width, height);
+            ctx.strokeStyle = "black";
+            ctx.strokeRect(position_x, position_y, width, height);
+            ctx.fillStyle = "black";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.font = (height/3).toString() + "px Arial";
+            ctx.fillText(title, position_x + width / 2, position_y + height / 2);
+
+
+            //클릭시 item들 나오기
+            var itemopen = false;
+            c.addEventListener('click', function (event) {
+                var mousePos = getMousePos(c, event);
+                if (mousePos.x > position_x && mousePos.x < (position_x + width) && mousePos.y < (position_y + height) && mousePos.y > position_y) {
+                    if (itemopen) {
+                        itemopen = false;
+                        ctx.clearRect(position_x - 1, position_y + height, c.width + 1, c.height + 1 + height * (item_list.length));
+                    }
+                    else{
+                        itemopen = true;
+                        //put menu item list under title
+                        for (i = 0; i < item_list.length; i++) {
+                            ctx.fillStyle = "white";
+                            ctx.fillRect(position_x, position_y + height * (i + 1), width, height);
+                            ctx.strokeStyle = "black";
+                            ctx.strokeRect(position_x, position_y + height * (i + 1), width, height);
+                            ctx.fillStyle = "black";
+                            ctx.textAlign = "center";
+                            ctx.textBaseline = "middle";
+                            ctx.font = (height / 4).toString() + "px Arial";
+                            ctx.fillText(item_list[i], position_x + width / 2, position_y + (height / 2) + height * (i + 1));
+                        }
+                    }
+                }
+            }, false);
+
+        }
+
+     
+    </script>
+
+    <canvas id="canvas" width="1000" height="1000"> </canvas>
+    <script>
+        Create_window("canvas", 1, 1, 300, 300, "window");
+        //font : Arial Times, Georgia, Palatino
+        Create_textbox("canvas", 300, 350, 200, 80, "My_text_box", 25, "Palatino");
+        Create_button("canvas", 400, 100, 150, 150, "My_button", 15, "Arial");
+        Create_button("canvas", 100, 350, 100, 150, "My_button_2", 15, "Arial");
+        var item_list = ["item1","item2", "item3"];
+        Create_menu("canvas", 600, 200, 150, 60, "My_Menu", item_list);
+    </script>
+</body>
+</html>
