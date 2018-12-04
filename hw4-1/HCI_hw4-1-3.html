@@ -399,19 +399,21 @@
             var ctx = c.getContext('2d');
             c.addEventListener('click', function (event) {
                 var mousePos = getMousePos(c, event);
+                var isthere = false;
                 for (var i = 0; i < tree.num; i++) {
                     //안에 있으면
                     if (mousePos.x > tree.q[i].data.position_x && mousePos.x < (tree.q[i].data.position_x + tree.q[i].data.width) && mousePos.y < (tree.q[i].data.position_y + tree.q[i].data.height) && mousePos.y > tree.q[i].data.position_y) {
                         message.text = tree.q[i].data.text.toString();
+                        if (i == 1) {
+                            message.text = "selected object's name";
+                        }
+                        isthere = true;
                     }
                 }
+                if (!isthere) message.text = "there's no object";
                 Create_textbox(message.ID, message.position_x, message.position_y, message.width, message.height, message.text, message.size, message.font);
 
             }, false);
-        }
-
-        function coundparent(node) {
-
         }
 
     </script>
