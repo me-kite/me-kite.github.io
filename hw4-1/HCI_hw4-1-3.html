@@ -1,0 +1,419 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>김나연_HCI</title>
+</head>
+<body>
+    <canvas id="canvas" width="2000" height="2000"> </canvas>
+
+
+    <script>
+        //hw 4-1-2
+        //참고 : http://blog.benoitvallon.com/data-structures-in-javascript/the-tree-data-structure/
+
+        //tree 구조
+        //data에 idnumber, arbitrary number of children 포함
+        //create, add, delete, search node
+        function Node(data) {
+            this.data = data;
+            this.children = [];
+        }
+
+        function Tree() {
+            this.root = null;
+            this.num = 0;
+            this.q = [];
+        }
+
+        Tree.prototype.add = function (data, toNodeData) {
+            var node = new Node(data);
+            
+            var parent = toNodeData ? this.findBFS(toNodeData) : null;
+            if (parent) {
+                parent.children.push(node);
+                this.q.push(node);
+                this.num += 1;
+            }
+            else {
+                if (!this.root) {
+                    this.root = node;
+                    this.q.push(node);
+                    this.num += 1;
+                }
+                else {
+                    alert("Root node is already assigned");
+                }
+            }
+        };
+
+        Tree.prototype.remove = function (data) {
+            if (this.root.data === data) {
+                this.root = null;
+            }
+
+            var queue = [this.root];
+            while (queue.length) {
+                var node = queue.shift();
+                for (var i = 0; i < node.children.length; i++) {
+                    if (node.children[i].data === data) {
+                        node.children.splice(i, 1);
+                    }
+                    else {
+                        queue.push(node.children[i]);
+                    }
+                }
+            }
+        };
+
+        Tree.prototype.contains = function (data) {
+            return this.findBFS(data) ? true : false;
+        };
+
+        Tree.prototype.findBFS = function (data) {
+            var queue = [this.root];
+            while (queue.length) {
+                var node = queue.shift();
+                if (node.data === data) {
+                    return node;
+                }
+                for (var i = 0; i < node.children.length; i++) {
+                    queue.push(node.children[i]);
+                }
+            }
+            return null;
+        };
+
+        //canvas에 그리기
+        Tree.prototype.draw = function () {
+            this.root.data.create();
+            var c = document.getElementById(this.root.data.ID);
+            var ctx = c.getContext('2d');
+            for (var i = 0; i < this.root.children.length; i++) {
+                /*ctx.beginPath();
+                ctx.moveTo(this.root.data.width / 2 + this.root.data.position_x, this.root.data.height + this.root.data.position_y);
+                ctx.lineTo(this.root.children[i].data.width / 2 + this.root.children[i].data.position_x, this.root.children[i].data.position_y);
+                ctx.stroke();*/
+                drawchild(this.root.children[i], ctx);
+            }
+        };
+
+        function drawchild(node, ctx) {
+            node.data.create();
+            for (var i = 0; i < node.children.length; i++) {
+                /*ctx.beginPath();
+                ctx.moveTo(node.data.width / 2 + node.data.position_x, node.data.height + node.data.position_y);
+                ctx.lineTo(node.children[i].data.width / 2 + node.children[i].data.position_x, node.children[i].data.position_y);
+                ctx.stroke();*/
+                drawchild(node.children[i]);
+            }
+        }
+        //contain a graphic element
+        //window line label rectangle point
+        //homework 4-1-1에서 만든것을 graphic elements로 사용하겠다
+        //-> window textbox button menu
+        //can manage different types of graphic nodes
+
+
+    </script>
+
+    <script>
+        //hw 4-1-1
+        class Window {
+            constructor(ID, position_x, position_y, width, height, text) {
+                this.ID = ID;
+                this.position_x = position_x;
+                this.position_y = position_y;
+                this.width = width;
+                this.height = height;
+                this.text = text;
+            }
+
+            create() {
+                Create_window(this.ID, this.position_x, this.position_y, this.width, this.height, this.text);
+            }
+        }
+        function Create_window(ID, position_x, position_y, width, height, text) {
+            var c = document.getElementById(ID);
+            var ctx = c.getContext('2d');
+
+            //rectangular window
+            ctx.fillStyle = "white";
+            ctx.fillRect(position_x, position_y, width, height);
+            ctx.strokeStyle = "black";
+            ctx.strokeRect(position_x, position_y, width, height);
+
+            //title
+            ctx.fillStyle = "black";
+            ctx.textAlign = "center";
+            ctx.font = "15px Arial";
+            ctx.fillText(text, position_x + width / 2, position_y + 15);
+
+            //remove button
+            rB = { x: position_x + width - 20, y: position_y, width: 20, height: 20 };
+            ctx.fillStyle = "red";
+            ctx.fillRect(rB.x, rB.y, rB.width, rB.height);
+            ctx.fillStyle = "black";
+            ctx.font = "19px Arial";
+            ctx.fillText("X", rB.x + 11, rB.y + 18);
+            //클릭시
+            c.addEventListener('click', function (event) {
+                var mousePos = getMousePos(c, event);
+                if (mousePos.x > rB.x && mousePos.x < (rB.x + rB.width) && mousePos.y < (rB.y + rB.height) && mousePos.y > rB.y) {
+                    ctx.clearRect(position_x - 1, position_y - 1, c.width + 1, c.height + 1);
+                }
+            }, false);
+
+
+            //hide button
+            rH = { x: position_x + width - 40, y: position_y, width: 20, height: 20 };
+            ctx.fillStyle = "skyblue";
+            ctx.fillRect(rH.x, rH.y, rH.width, rH.height);
+            ctx.fillStyle = "black";
+            ctx.font = "19px Arial";
+            ctx.fillText("-", rH.x + 11, rH.y + 18);
+            var isHide = false;
+            //클릭시
+            c.addEventListener('click', function (event) {
+                var mousePos = getMousePos(c, event);
+                if (!isHide && mousePos.x > rH.x && mousePos.x < (rH.x + rH.width) && mousePos.y < (rH.y + rH.height) && mousePos.y > rH.y) {
+                    //ctx.clearRect(position_x, position_y, c.width, c.height);
+                    ctx.strokeStyle = "white";
+                    ctx.strokeRect(position_x, position_y, width, height);
+                    isHide = true;
+                }
+                else if (isHide && mousePos.x > rH.x && mousePos.x < (rH.x + rH.width) && mousePos.y < (rH.y + rH.height) && mousePos.y > rH.y) {
+                    //ctx.clearRect(position_x, position_y, c.width, c.height);
+                    ctx.strokeStyle = "black";
+                    ctx.strokeRect(position_x, position_y, width, height);
+                    isHide = false;
+                }
+            }, false);
+
+        }
+
+        function getMousePos(canvas, event) {
+            var rect = canvas.getBoundingClientRect();
+            return {
+                x: event.clientX - rect.left,
+                y: event.clientY - rect.top
+            };
+        }
+
+        class TextBox {
+            constructor(ID, position_x, position_y, width, height, text, size, font) {
+                this.ID = ID;
+                this.position_x = position_x;
+                this.position_y = position_y;
+                this.width = width;
+                this.height = height;
+                this.text = text;
+                this.size = size;
+                this.font = font;
+            }
+
+            create() {
+                Create_textbox(this.ID, this.position_x, this.position_y, this.width, this.height, this.text, this.size, this.font);
+            }
+        }
+
+        //textbox
+        //label, other simple properties
+        //resizable
+        function Create_textbox(ID, position_x, position_y, width, height, text, size, font) {
+            var c = document.getElementById(ID);
+            var ctx = c.getContext('2d');
+
+            //textbox
+            ctx.fillStyle = "white";
+            ctx.fillRect(position_x, position_y, width, height);
+            ctx.strokeStyle = "black";
+            ctx.strokeRect(position_x, position_y, width, height);
+            ctx.fillStyle = "black";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.font = size.toString() + "px " + font;
+            ctx.fillText(text, position_x + width / 2, position_y + height / 2);
+        }
+
+
+        class Button {
+            constructor(ID, position_x, position_y, width, height, text, size, font) {
+                this.ID = ID;
+                this.position_x = position_x;
+                this.position_y = position_y;
+                this.width = width;
+                this.height = height;
+                this.text = text;
+                this.size = size;
+                this.font = font;
+            }
+
+            create() {
+                Create_button(this.ID, this.position_x, this.position_y, this.width, this.height, this.text, this.size, this.font);
+            }
+        }
+        //button
+        //resizable
+        //label, other simple properties
+        function Create_button(ID, position_x, position_y, width, height, text, size, font) {
+            var c = document.getElementById(ID);
+            var ctx = c.getContext('2d');
+
+            //round button
+            var cornerRadius = 20;
+            ctx.fillStyle = "white";
+            ctx.fillRect(position_x, position_y, width, height);
+            ctx.strokeStyle = "black";
+            ctx.moveTo(position_x + cornerRadius, position_y);
+            ctx.arcTo(position_x + width, position_y, position_x + width, position_y + height, cornerRadius);
+            ctx.arcTo(position_x + width, position_y + height, position_x, position_y + height, cornerRadius);
+            ctx.arcTo(position_x, position_y + height, position_x, position_y, cornerRadius);
+            ctx.arcTo(position_x, position_y, position_x + width, position_y, cornerRadius);
+            ctx.stroke();
+
+            //label
+            ctx.fillStyle = "black";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.font = size.toString() + "px " + font;
+            ctx.fillText(text, position_x + width / 2, position_y + height / 2);
+
+            //click
+            c.addEventListener('click', function (event) {
+                var mousePos = getMousePos(c, event);
+                if (mousePos.x > position_x && mousePos.x < (position_x + width) && mousePos.y < (position_y + height) && mousePos.y > position_y) {
+                    alert("click! : " + text.toString());
+                }
+            }, false);
+        }
+
+
+        class Menu {
+            constructor(ID, position_x, position_y, width, height, text, item_list) {
+                this.ID = ID;
+                this.position_x = position_x;
+                this.position_y = position_y;
+                this.width = width;
+                this.height = height;
+                this.text = text;
+                this.item_list = item_list;
+            }
+
+            create() {
+                Create_menu(this.ID, this.position_x, this.position_y, this.width, this.height, this.text, this.item_list);
+            }
+        }
+        //Pull down menu
+        //menu title
+        //menu item list
+        //size
+        function Create_menu(ID, position_x, position_y, width, height, text, item_list) {
+            var c = document.getElementById(ID);
+            var ctx = c.getContext('2d');
+
+            //menu title
+            ctx.fillStyle = "white";
+            ctx.fillRect(position_x, position_y, width, height);
+            ctx.strokeStyle = "black";
+            ctx.strokeRect(position_x, position_y, width, height);
+            ctx.fillStyle = "black";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.font = (height / 3).toString() + "px Arial";
+            ctx.fillText(text, position_x + width / 2, position_y + height / 2);
+
+            //item
+            for (i = 0; i < item_list.length; i++) {
+                ctx.fillStyle = "white";
+                ctx.fillRect(position_x, position_y + height * (i + 1), width, height);
+                ctx.strokeStyle = "black";
+                ctx.strokeRect(position_x, position_y + height * (i + 1), width, height);
+                ctx.fillStyle = "black";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.font = (height / 4).toString() + "px Arial";
+                ctx.fillText(item_list[i], position_x + width / 2, position_y + (height / 2) + height * (i + 1));
+            }
+
+            //클릭시 item들 나오기
+            var itemopen = true;
+            c.addEventListener('click', function (event) {
+                var mousePos = getMousePos(c, event);
+                if (mousePos.x > position_x && mousePos.x < (position_x + width) && mousePos.y < (position_y + height) && mousePos.y > position_y) {
+                    if (itemopen) {
+                        itemopen = false;
+                        ctx.clearRect(position_x - 1, position_y + height, width + 2, height * (item_list.length) + 1);
+                    }
+                    else {
+                        itemopen = true;
+                        //put menu item list under title
+                        for (i = 0; i < item_list.length; i++) {
+                            ctx.fillStyle = "white";
+                            ctx.fillRect(position_x, position_y + height * (i + 1), width, height);
+                            ctx.strokeStyle = "black";
+                            ctx.strokeRect(position_x, position_y + height * (i + 1), width, height);
+                            ctx.fillStyle = "black";
+                            ctx.textAlign = "center";
+                            ctx.textBaseline = "middle";
+                            ctx.font = (height / 4).toString() + "px Arial";
+                            ctx.fillText(item_list[i], position_x + width / 2, position_y + (height / 2) + height * (i + 1));
+                        }
+                    }
+                }
+            }, false);
+
+        }
+    </script>
+
+    <script>
+        var tree = new Tree();
+        var message = new TextBox("canvas", 5, 100, 200, 100, "selected object's name", 15, "Palatino");
+
+        var window1 = new Window("canvas", 300, 1, 800, 600, "window");
+        var textbox1 = new TextBox("canvas", 650, 100, 400, 300, "My_text_box", 25, "Palatino");
+        var textbox2 = new TextBox("canvas", 380, 330, 200, 200, "My_text_box_2", 25, "Palatino");
+        var button1 = new Button("canvas", 680, 280, 100, 100, "My_button", 15, "Arial");
+        var button2 = new Button("canvas", 800, 280, 100, 100, "My_button_2", 15, "Arial");
+        var button3 = new Button("canvas", 920, 280, 100, 100, "My_button_3", 15, "Arial");
+        var button4 = new Button("canvas", 750, 450, 200, 100, "My_button_4", 15, "Arial");
+        var item_list = ["item1", "item2", "item3"];
+        var menu1 = new Menu("canvas", 350, 50, 150, 60, "My_Menu", item_list);
+        tree.add(window1);
+        tree.add(message, window1);
+        tree.add(textbox1, window1);
+        tree.add(textbox2, window1);
+        tree.add(button1, textbox1);
+        tree.add(button2, textbox1);
+        tree.add(button3, textbox1);
+        tree.add(button4, window1);
+        tree.add(menu1, window1);
+        
+        tree.draw();
+    </script>
+
+    <script>
+
+        window.onload = function () {
+            var c = document.getElementById("canvas");
+            var ctx = c.getContext('2d');
+            c.addEventListener('click', function (event) {
+                var mousePos = getMousePos(c, event);
+                for (var i = 0; i < tree.num; i++) {
+                    //안에 있으면
+                    if (mousePos.x > tree.q[i].data.position_x && mousePos.x < (tree.q[i].data.position_x + tree.q[i].data.width) && mousePos.y < (tree.q[i].data.position_y + tree.q[i].data.height) && mousePos.y > tree.q[i].data.position_y) {
+                        message.text = tree.q[i].data.text.toString();
+                    }
+                }
+                Create_textbox(message.ID, message.position_x, message.position_y, message.width, message.height, message.text, message.size, message.font);
+
+            }, false);
+        }
+
+        function coundparent(node) {
+
+        }
+
+    </script>
+</body>
+</html>
